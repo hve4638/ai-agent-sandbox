@@ -36,32 +36,7 @@ RUN /root/.local/share/fnm/fnm install 22
 RUN npm install -g @google/gemini-cli && \
     npm install -g @anthropic-ai/claude-code
 
-# tmux alias 지정
-RUN echo 'alias tn="tmux new-session -s"' >> /root/.bashrc && \
-    echo 'alias ta="tmux attach-session -t"' >> /root/.bashrc && \
-    echo 'alias tk="tmux kill-session -t"' >> /root/.bashrc && \
-    echo 'alias tl="tmux list-sessions"' >> /root/.bashrc && \
-    echo 'alias td="tmux detach"' >> /root/.bashrc
-
-# tmux alias
-RUN echo 'set -g mouse on' >> /root/.tmux.conf && \
-    echo 'set -g default-terminal "screen-256color"' >> /root/.tmux.conf && \
-    echo '' >> /root/.tmux.conf
-
-RUN echo 'if [ -n "$SSH_TTY" ] && [ -z "$TMUX" ]; then' >> /root/.bashrc && \
-    echo '  if tmux list-sessions 2>/dev/null >/dev/null; then' >> /root/.bashrc && \
-    echo '    echo -e "TMUX Sessions"' >> /root/.bashrc && \
-    echo '    tmux list-sessions -F "* #{session_name}" 2>/dev/null' >> /root/.bashrc && \
-    echo '    echo ""' >> /root/.bashrc && \
-    echo '  else' >> /root/.bashrc && \
-    echo '    echo "No tmux session"' >> /root/.bashrc && \
-    echo '  fi' >> /root/.bashrc && \
-    echo '  echo "tmux usage: tn [session_name] | ta [session_name] | tk [session_name] | tl"' >> /root/.bashrc && \
-    echo 'fi' >> /root/.bashrc && \
-    echo '' >> /root/.bashrc
-
-RUN echo 'export LC_ALL=ko_KR.UTF-8' >> /root/.bashrc && \
-    echo 'export LANG=ko_KR.UTF-8'>> /root/.bashrc
+RUN echo 'source ~/.bashrc.extra' >> /root/.bashrc
 
 # 이름 지정
 ENV NAME=Agent
