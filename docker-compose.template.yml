@@ -20,4 +20,7 @@ services:
       - ./vol/home/GEMINI.md:/root/GEMINI.md:ro
       - ./vol/home/.tmux.conf:/root/.tmux.conf
       - ./vol/home/.codex:/root/.codex
+      - ./vol/home/.copilot:/root/.copilot
+      - ./vol/home/.gemini:/root/.gemini
+      - ./vol/home/.claude:/root/.claude
     command: sh -c "service ssh start && /bin/bash"
