@@ -7,18 +7,17 @@ services:
     tty: true
     stdin_open: true
     restart: unless-stopped
-    ports:
-      - "5024:22"
-      - "8500-8599:8500-8599"
+    network_mode: host
     volumes:
+      - /path/to/your/directory:/playground
       - ./vol/client_keys/id_rsa.pub:/root/.ssh/authorized_keys:ro
       - ./vol/ssh/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key:ro
       - ./vol/ssh/ssh_host_rsa_key.pub:/etc/ssh/ssh_host_rsa_key.pub:ro
       - ./vol/ssh/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key:ro
       - ./vol/ssh/ssh_host_ed25519_key.pub:/etc/ssh/ssh_host_ed25519_key.pub:ro
-      - /nas/storage1/.volume/ai-control:/playground
       - ./vol/home/.bashrc.extra:/root/.bashrc.extra:ro
       - ./vol/home/CLAUDE.md:/root/CLAUDE.md:ro
       - ./vol/home/GEMINI.md:/root/GEMINI.md:ro
       - ./vol/home/.tmux.conf:/root/.tmux.conf
+      - ./vol/home/.codex:/root/.codex
     command: sh -c "service ssh start && /bin/bash"

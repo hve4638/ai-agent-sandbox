@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 RUN mkdir -p /var/run/sshd
 
-RUN echo "Port 22                           \n\
+RUN echo "Port 5024                           \n\
     PermitRootLogin yes                        \n\
     PasswordAuthentication no                  \n\
     PubkeyAuthentication yes                   \n\
@@ -34,7 +34,9 @@ RUN /root/.local/share/fnm/fnm install 22
 
 # AI Agent 툴 설치
 RUN npm install -g @google/gemini-cli && \
-    npm install -g @anthropic-ai/claude-code
+    npm install -g @anthropic-ai/claude-code && \
+    npm install -g @openai/codex && \
+    npm install -g @github/copilot
 
 RUN echo 'source ~/.bashrc.extra' >> /root/.bashrc
 

@@ -1,2 +1,11 @@
 vol/client_keys/
 vol/ssh/
+vol/home/.codex
+vol/home/.claude
+vol/home/.gemini
+vol/home/.copilot
+
+.env
+.env.local
+
+docker-compose.yml

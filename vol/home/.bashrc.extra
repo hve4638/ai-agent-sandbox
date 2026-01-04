@@ -8,8 +8,10 @@ alias tl="tmux list-sessions"
 alias td="tmux detach"
 alias trename="tmux rename-session -t"
 alias tr="tmux rename-session -t"
+
 alias claude="claude --dangerously-skip-permissions"
 alias copilot="copilot --allow-all-tools"
+alias codex="codex --yolo"
 
 if [ -n "$SSH_TTY" ] && [ -z "$TMUX" ]; then
     if tmux list-sessions 2>/dev/null >/dev/null; then
