@@ -5,20 +5,27 @@ AI 코딩 에이전트(Claude Code, Gemini CLI)를 위한 Docker 기반 격리 �
 ## 요구사항
 
 - Docker & Docker Compose
-- Bash 쉘 (키 생성 스크립트 실행용)
 
 ## 빠른 시작
 
-### 1. 볼륨 경로 설정
+### 1. docker-compose.yml 생성
+
+템플릿을 복사해 로컬 설정 파일 생성
+
+```bash
+cp docker-compose.template.yml docker-compose.yml
+```
+
+### 2. 볼륨 경로 설정
 
 `docker-compose.yml`에서 작업 디렉토리 경로를 환경에 맞게 수정
 
 ```yaml
 volumes:
-  - /your/work/directory:/playground  # `/your/work/directory`를 실제 작업 디렉토리로 변경
+  - /path/to/your/directory:/playground  # `/path/to/your/directory`를 실제 작업 디렉토리로 변경
 ```
 
-### 2. SSH 키 생성
+### 3. SSH 키 생성
 
 ```bash
 # SSH 호스트 키 생성 (RSA, ED25519)
@@ -28,13 +35,13 @@ volumes:
 ./gen_client_key.sh
 ```
 
-### 3. 컨테이너 실행
+### 4. 컨테이너 실행
 
 ```bash
 docker-compose up -d --build
 ```
 
-### 4. SSH 접속
+### 5. SSH 접속
 
 ```bash
 ssh -i ./vol/client_keys/id_rsa -p 5024 root@localhost
@@ -51,7 +58,7 @@ ssh -i ./vol/client_keys/id_rsa -p 5024 root@localhost
 - AI에게 접근을 허용할 프로젝트만 별도 폴더에 넣어 `/playground`에 연결
 
 ⚠️ **백업**
-- 작업 내역은 주기적으로 백업 권장 (git commit, 외부 저장소 복제 등)
+- 작업 내역은 주기적으로 백업 권장 (git 원격 저장소, 외부 저장소 복제 등)
 
 ## 컨테이너 구성
 
@@ -62,22 +69,19 @@ ssh -i ./vol/client_keys/id_rsa -p 5024 root@localhost
 | 언어 | Python3, Node.js 22, Go |
 | 빌드 | build-essential, cmake, llvm |
 | 유틸리티 | git, vim, tmux, curl, wget, unzip |
-
-### 포트 매핑
-
-| 호스트 | 컨테이너 | 용도 |
-|--------|---------|------|
-| 5024 | 22 | SSH 접속 |
-| 8500-8599 | 8500-8599 | 애플리케이션 |
-
-> 포트 매핑 수정: `docker-compose.yml`의 `ports` 섹션에서 변경
+| AI 에이전트 CLI | Gemini CLI, Claude Code CLI, OpenAI Codex CLI, GitHub Copilot CLI |
 
 ### 볼륨 마운트
 
 | 호스트 | 컨테이너 | 설명 |
 |--------|---------|------|
-| `/nas/storage1/.volume/ai-control` | `/playground` | 작업 디렉토리 |
+| `/path/to/your/directory` | `/playground` | 작업 디렉토리 (필수) |
 | `./vol/client_keys/id_rsa.pub` | `/root/.ssh/authorized_keys` | SSH 인증 |
+| `./vol/ssh/ssh_host_rsa_key` (+ .pub) | `/etc/ssh/ssh_host_rsa_key` (+ .pub) | SSH 호스트 키 |
+| `./vol/ssh/ssh_host_ed25519_key` (+ .pub) | `/etc/ssh/ssh_host_ed25519_key` (+ .pub) | SSH 호스트 키 |
+| `./vol/home/.bashrc.extra` | `/root/.bashrc.extra` | 추가 셸 설정/alias |
+| `./vol/home/.tmux.conf` | `/root/.tmux.conf` | tmux 설정 |
+| `./vol/home/.codex` | `/root/.codex` | Codex 설정 (옵션) |
 | `./vol/home/CLAUDE.md` | `/root/CLAUDE.md` | Claude 에이전트 지침 |
 | `./vol/home/GEMINI.md` | `/root/GEMINI.md` | Gemini 에이전트 지침 |
 
@@ -85,7 +89,8 @@ ssh -i ./vol/client_keys/id_rsa -p 5024 root@localhost
 
 ```
 .
-├── docker-compose.yml      # 서비스 정의
+├── docker-compose.template.yml # 서비스 템플릿 (git tracked)
+├── docker-compose.yml      # 로컬 설정 (gitignore)
 ├── Dockerfile              # 이미지 빌드 설정
 ├── gen_client_key.sh       # 클라이언트 SSH 키 생성
 ├── gen_ssh_host.sh         # 호스트 SSH 키 생성
@@ -108,7 +113,7 @@ ssh -i ./vol/client_keys/id_rsa -p 5024 root@localhost
 
 ## tmux 사용법
 
-`tmux`는 하나의 터미널에서 여러 가상 세션을 생성하고 관리하는 도구로 SSH 연결이 끊어지거나 터미널을 종료해도 tmux 세션 내 작업은 계속 유지되므로 장시간 작업 시 유용하다.
+`tmux`는 하나의 터미널에서 여러 가상 세션을 생성하고 관리하는 도구로 SSH 연결이 끊어지거나 터미널을 종료해도 tmux 세션 내 작업은 계속 유지되므로 장시간 작업 및 에이전트 유지 시 유용함.
 
 ### Alias 목록
 
@@ -139,14 +144,24 @@ tk myproject
 
 ## AI Agent
 
-컨테이너에 AI 코딩 에이전트가 사전 설치되어 있다.
+### 에이전트 alias
 
-YOLO 모드(파일 수정, 삭제, 명령어 실행 등을 확인 없이 수행)로 설정되어 있으므로 주의 필요.
+컨테이너에 AI 코딩 에이전트가 사전 설치되어 있으며 YOLO 모드(파일 수정, 삭제, 명령어 실행 등을 확인 없이 수행)로 설정되어 있으므로 주의 필요.
 
-| Alias | 원본 명령어 | 설명 |
-|-------|------------|------|
-| `claude` | `claude --dangerously-skip-permissions` | Claude Code 실행 (권한 확인 스킵) |
-| `copilot` | `copilot --allow-all-tools` | GitHub Copilot 실행 (모든 도구 허용) |
+| Alias | 원본 명령어 |
+|-------|------------|
+| `claude` | `claude --dangerously-skip-permissions` |
+| `copilot` | `copilot --allow-all-tools` |
+| `codex` | `codex --yolo` |
+| `gemini` | `gemini --yolo` |
+
+### Codex 초기 로그인 설정
+
+컨테이너에서 codex 최초 로그인이 실패 시 아래 순서로 설정 사용
+
+1. 호스트 환경에서 `codex login`으로 로그인 완료
+2. 호스트의 codex 설정 디렉터리(윈도우: `C:\\사용자\\사용자이름\\.codex`, 리눅스: `~/.codex`)를 `./vol/home/.codex`로 복사
+3. 이후 컨테이너 내에서 `codex` 재실행
 
 ## 라이선스
 
