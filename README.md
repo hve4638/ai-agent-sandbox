@@ -25,23 +25,32 @@ volumes:
   - /path/to/your/directory:/playground  # `/path/to/your/directory`를 실제 작업 디렉토리로 변경
 ```
 
-### 3. SSH 키 생성
+### 3. 초기 vol/ 생성
+
+SSH 키(호스트, 클라이언트)와 홈 디렉토리 기본 파일을 생성
 
 ```bash
-# SSH 호스트 키 생성 (RSA, ED25519)
-./gen_ssh_host.sh
-
-# 클라이언트 키 생성
-./gen_client_key.sh
+./init.sh
 ```
 
-### 4. 컨테이너 실행
+`scripts/` 내 스크립트를 모두 실행하며, 이미 존재하는 파일은 건너뜀
+
+### 4. (선택) PS1 이름 설정
+
+셸 프롬프트에 표시될 이름을 변경하려면 `.env` 생성 후 수정
+
+```bash
+cp .env.example .env
+# SANDBOX_NAME=Agent 값을 원하는 이름으로 변경
+```
+
+### 5. 컨테이너 실행
 
 ```bash
 docker-compose up -d --build
 ```
 
-### 5. SSH 접속
+### 6. SSH 접속
 
 ```bash
 ssh -i ./vol/client_keys/id_rsa -p 1022 root@localhost
@@ -78,14 +87,22 @@ ssh -i ./vol/client_keys/id_rsa -p 1022 root@localhost
 ├── docker-compose.template.yml # 서비스 템플릿 (git tracked)
 ├── docker-compose.yml      # 로컬 설정 (gitignore)
 ├── Dockerfile              # 이미지 빌드 설정
-├── gen_client_key.sh       # 클라이언트 SSH 키 생성
-├── gen_ssh_host.sh         # 호스트 SSH 키 생성
+├── .env.example            # 환경 변수 예시 (SANDBOX_NAME 등)
+├── init.sh                 # 초기 vol/ 생성 (scripts/ 전체 실행)
 ├── README.md
-└── vol/
-    ├── client_keys/        # SSH 클라이언트 키 (gitignore)
+├── home/                   # 홈 디렉토리 기본 파일 (vol/home/으로 복사됨)
+│   ├── .bashrc.extra
+│   ├── .tmux.conf
+│   └── AGENTS.md
+├── scripts/
+│   ├── gen_client_key.sh   # 클라이언트 SSH 키 생성
+│   ├── gen_home.sh         # home/ → vol/home/ 복사
+│   └── gen_ssh_host.sh     # 호스트 SSH 키 생성
+└── vol/                    # 생성된 로컬 데이터 (gitignore)
+    ├── client_keys/        # SSH 클라이언트 키
     │   ├── id_rsa
     │   └── id_rsa.pub
-    ├── ssh/                # SSH 호스트 키 (gitignore)
+    ├── ssh/                # SSH 호스트 키
     │   ├── ssh_host_ed25519_key
     │   ├── ssh_host_ed25519_key.pub
     │   ├── ssh_host_rsa_key
@@ -93,8 +110,7 @@ ssh -i ./vol/client_keys/id_rsa -p 1022 root@localhost
     └── home/               # 홈 디렉토리 설정
         ├── .bashrc.extra
         ├── .tmux.conf
-        ├── CLAUDE.md
-        └── GEMINI.md
+        └── AGENTS.md
 ```
 
 ## tmux 사용법
