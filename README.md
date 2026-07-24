@@ -44,20 +44,20 @@ docker-compose up -d --build
 ### 5. SSH 접속
 
 ```bash
-ssh -i ./vol/client_keys/id_rsa -p 5024 root@localhost
+ssh -i ./vol/client_keys/id_rsa -p 1022 root@localhost
 ```
 
 ## 유의사항
 
-⚠️ **작업 디렉토리**
+⚠️ 작업 디렉토리
 - `/playground` 디렉토리 내에서만 작업
-- 컨테이너 종료 시 `/playground` 외부의 작업 내역은 모두 휘발됨
+- 컨테이너 제거 시 `/playground` 외부의 작업 내역은 모두 휘발됨
 
-⚠️ **프로젝트 관리**
+⚠️ 프로젝트 관리
 - 기존 작업 폴더를 통째로 마운트하지 말 것
 - AI에게 접근을 허용할 프로젝트만 별도 폴더에 넣어 `/playground`에 연결
 
-⚠️ **백업**
+⚠️ 백업
 - 작업 내역은 주기적으로 백업 권장 (git 원격 저장소, 외부 저장소 복제 등)
 
 ## 컨테이너 구성
@@ -70,20 +70,6 @@ ssh -i ./vol/client_keys/id_rsa -p 5024 root@localhost
 | 빌드 | build-essential, cmake, llvm |
 | 유틸리티 | git, vim, tmux, curl, wget, unzip |
 | AI 에이전트 CLI | Gemini CLI, Claude Code CLI, OpenAI Codex CLI, GitHub Copilot CLI |
-
-### 볼륨 마운트
-
-| 호스트 | 컨테이너 | 설명 |
-|--------|---------|------|
-| `/path/to/your/directory` | `/playground` | 작업 디렉토리 (필수) |
-| `./vol/client_keys/id_rsa.pub` | `/root/.ssh/authorized_keys` | SSH 인증 |
-| `./vol/ssh/ssh_host_rsa_key` (+ .pub) | `/etc/ssh/ssh_host_rsa_key` (+ .pub) | SSH 호스트 키 |
-| `./vol/ssh/ssh_host_ed25519_key` (+ .pub) | `/etc/ssh/ssh_host_ed25519_key` (+ .pub) | SSH 호스트 키 |
-| `./vol/home/.bashrc.extra` | `/root/.bashrc.extra` | 추가 셸 설정/alias |
-| `./vol/home/.tmux.conf` | `/root/.tmux.conf` | tmux 설정 |
-| `./vol/home/.codex` | `/root/.codex` | Codex 설정 (옵션) |
-| `./vol/home/CLAUDE.md` | `/root/CLAUDE.md` | Claude 에이전트 지침 |
-| `./vol/home/GEMINI.md` | `/root/GEMINI.md` | Gemini 에이전트 지침 |
 
 ## 디렉토리 구조
 
@@ -154,14 +140,6 @@ tk myproject
 | `copilot` | `copilot --allow-all-tools` |
 | `codex` | `codex --yolo` |
 | `gemini` | `gemini --yolo` |
-
-### Codex 초기 로그인 설정
-
-컨테이너에서 codex 최초 로그인이 실패 시 아래 순서로 설정 사용
-
-1. 호스트 환경에서 `codex login`으로 로그인 완료
-2. 호스트의 codex 설정 디렉터리(윈도우: `C:\\사용자\\사용자이름\\.codex`, 리눅스: `~/.codex`)를 `./vol/home/.codex`로 복사
-3. 이후 컨테이너 내에서 `codex` 재실행
 
 ## 라이선스
 

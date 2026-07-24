@@ -8,14 +8,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: workspace-sandbox
-    tty: true
-    stdin_open: true
+    container_name: sandbox-workspace
     restart: unless-stopped
     ports:
-      - "5030:22"
+      - "1022:22"
     volumes:
-      - /path/to/your/directory:/playground
+      # - /path/to/your/directory:/playground
       - ./vol/home/.bashrc.extra:/root/.bashrc.extra:ro
       - ./vol/home/CLAUDE.md:/root/CLAUDE.md:ro
       - ./vol/home/GEMINI.md:/root/GEMINI.md:ro
@@ -24,7 +22,6 @@ services:
       - copilot-data:/root/.copilot
       - gemini-data:/root/.gemini
       - claude-data:/root/.claude
-    command: sh -c "service ssh start && /bin/bash"
 
 volumes:
   claude-data:
