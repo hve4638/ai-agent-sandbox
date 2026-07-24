@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 RUN mkdir -p /var/run/sshd
 
-RUN echo "Port 5024                           \n\
+RUN echo "Port 22                              \n\
     PermitRootLogin yes                        \n\
     PasswordAuthentication no                  \n\
     PubkeyAuthentication yes                   \n\
