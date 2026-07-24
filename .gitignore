@@ -1,6 +1,4 @@
-vol/client_keys/
-vol/ssh/
-vol/home/.*
+vol/
 
 .env
 .env.local
