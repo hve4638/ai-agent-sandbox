@@ -8,6 +8,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NAME: ${SANDBOX_NAME:-Agent}
     container_name: sandbox-workspace
     restart: unless-stopped
     ports:

@@ -48,8 +48,9 @@ EOF
 
 RUN echo 'source ~/.bashrc.extra' >> /root/.bashrc
 
-# 이름 지정
-ENV NAME=Agent
+# 이름 지정 (.env의 SANDBOX_NAME 또는 docker-compose.yml의 build.args로 변경)
+ARG NAME=Agent
+ENV NAME=$NAME
 RUN echo "export PS1='\[\e]0;\u@\h: \w\a\]\[\033[01;32m\]${NAME}@\h\[\033[00m\]:\[\033[01;34m\]\w$\[\033[00m\] '" >> /root/.bashrc
 
 EXPOSE 22
