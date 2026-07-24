@@ -15,8 +15,8 @@ services:
     volumes:
       # - /path/to/your/directory:/playground
       - ./vol/home/.bashrc.extra:/root/.bashrc.extra:ro
-      - ./vol/home/CLAUDE.md:/root/CLAUDE.md:ro
-      - ./vol/home/GEMINI.md:/root/GEMINI.md:ro
+      - ./vol/home/AGENTS.md:/root/CLAUDE.md:ro
+      - ./vol/home/AGENTS.md:/root/GEMINI.md:ro
       - ./vol/home/.tmux.conf:/root/.tmux.conf
       - codex-data:/root/.codex
       - copilot-data:/root/.copilot

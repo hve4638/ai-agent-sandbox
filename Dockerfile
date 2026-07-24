@@ -38,6 +38,14 @@ RUN npm install -g @google/gemini-cli && \
     npm install -g @openai/codex && \
     npm install -g @github/copilot
 
+RUN cat <<'EOF' >> ~/.bashrc
+if [ -d "$HOME/.bashrc.d" ]; then
+    for f in "$HOME/.bashrc.d"/*; do
+        [ -f "$f" ] && . "$f"
+    done
+fi
+EOF
+
 RUN echo 'source ~/.bashrc.extra' >> /root/.bashrc
 
 # 이름 지정
