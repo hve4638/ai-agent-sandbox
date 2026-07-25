@@ -38,17 +38,25 @@ RUN npm install -g @google/gemini-cli && \
     npm install -g @openai/codex && \
     npm install -g @github/copilot
 
+# .bashrc.d 로드 (2단계 깊이까지, *.sh만)
 RUN cat <<'EOF' >> ~/.bashrc
 if [ -d "$HOME/.bashrc.d" ]; then
-    for f in "$HOME/.bashrc.d"/*; do
-        [ -f "$f" ] && . "$f"
+    for f in "$HOME/.bashrc.d"/*.sh; do
+        [ -r "$f" ] && . "$f"
+    done
+    for d in "$HOME/.bashrc.d"/*/; do
+        [ -d "$d" ] || continue
+        for f in "$d"*.sh; do
+            [ -r "$f" ] && . "$f"
+        done
     done
 fi
 EOF
 
-RUN echo 'source ~/.bashrc.extra' >> /root/.bashrc
+COPY home/AGENTS.md /root/AGENTS.md
+COPY home/AGENTS.md /root/CLAUDE.md
+COPY home/AGENTS.md /root/GEMINI.md
 
-# 이름 지정 (.env의 SANDBOX_NAME 또는 docker-compose.yml의 build.args로 변경)
 ARG NAME=Agent
 ENV NAME=$NAME
 RUN echo "export PS1='\[\e]0;\u@\h: \w\a\]\[\033[01;32m\]${NAME}@\h\[\033[00m\]:\[\033[01;34m\]\w$\[\033[00m\] '" >> /root/.bashrc

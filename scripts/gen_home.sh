@@ -5,14 +5,17 @@ SRC_DIR=./home
 TARGET_DIR=./vol/home
 mkdir -p "$TARGET_DIR"
 
-for src in "$SRC_DIR"/* "$SRC_DIR"/.[!.]*; do
-    [ -f "$src" ] || continue
-    name="$(basename "$src")"
-    if [ ! -f "$TARGET_DIR/$name" ]; then
-        cp "$src" "$TARGET_DIR/$name"
-        echo "[+] Copied $name"
+# AGENTS.md는 vol이 아니라 Dockerfile COPY로 이미지에 포함됨
+(cd "$SRC_DIR" && find . -type f ! -name AGENTS.md) | while read -r rel; do
+    rel="${rel#./}"
+    src="$SRC_DIR/$rel"
+    dst="$TARGET_DIR/$rel"
+    if [ ! -f "$dst" ]; then
+        mkdir -p "$(dirname "$dst")"
+        cp "$src" "$dst"
+        echo "[+] Copied $rel"
     else
-        echo "[=] $name already exists, skipping"
+        echo "[=] $rel already exists, skipping"
     fi
 done
 

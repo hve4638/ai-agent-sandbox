@@ -1,6 +1,7 @@
 include:
   - path:
       - partials/compose.ssh.yml
+      - partials/compose.vol.yml
     project_directory: .
 
 services:
@@ -14,19 +15,6 @@ services:
     restart: unless-stopped
     ports:
       - "1022:22"
-    volumes:
-      # - /path/to/your/directory:/playground
-      - ./vol/home/.bashrc.extra:/root/.bashrc.extra:ro
-      - ./vol/home/AGENTS.md:/root/CLAUDE.md:ro
-      - ./vol/home/AGENTS.md:/root/GEMINI.md:ro
-      - ./vol/home/.tmux.conf:/root/.tmux.conf
-      - codex-data:/root/.codex
-      - copilot-data:/root/.copilot
-      - gemini-data:/root/.gemini
-      - claude-data:/root/.claude
-
-volumes:
-  claude-data:
-  gemini-data:
-  copilot-data:
-  codex-data:
+    # 작업 디렉토리 마운트 (필수): 경로 수정 후 주석 해제
+    # volumes:
+    #   - /path/to/your/directory:/playground

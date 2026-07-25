@@ -80,39 +80,6 @@ ssh -i ./vol/client_keys/id_rsa -p 1022 root@localhost
 | 유틸리티 | git, vim, tmux, curl, wget, unzip |
 | AI 에이전트 CLI | Gemini CLI, Claude Code CLI, OpenAI Codex CLI, GitHub Copilot CLI |
 
-## 디렉토리 구조
-
-```
-.
-├── docker-compose.template.yml # 서비스 템플릿 (git tracked)
-├── docker-compose.yml      # 로컬 설정 (gitignore)
-├── Dockerfile              # 이미지 빌드 설정
-├── .env.example            # 환경 변수 예시 (SANDBOX_NAME 등)
-├── init.sh                 # 초기 vol/ 생성 (scripts/ 전체 실행)
-├── README.md
-├── home/                   # 홈 디렉토리 기본 파일 (vol/home/으로 복사됨)
-│   ├── .bashrc.extra
-│   ├── .tmux.conf
-│   └── AGENTS.md
-├── scripts/
-│   ├── gen_client_key.sh   # 클라이언트 SSH 키 생성
-│   ├── gen_home.sh         # home/ → vol/home/ 복사
-│   └── gen_ssh_host.sh     # 호스트 SSH 키 생성
-└── vol/                    # 생성된 로컬 데이터 (gitignore)
-    ├── client_keys/        # SSH 클라이언트 키
-    │   ├── id_rsa
-    │   └── id_rsa.pub
-    ├── ssh/                # SSH 호스트 키
-    │   ├── ssh_host_ed25519_key
-    │   ├── ssh_host_ed25519_key.pub
-    │   ├── ssh_host_rsa_key
-    │   └── ssh_host_rsa_key.pub
-    └── home/               # 홈 디렉토리 설정
-        ├── .bashrc.extra
-        ├── .tmux.conf
-        └── AGENTS.md
-```
-
 ## tmux 사용법
 
 `tmux`는 하나의 터미널에서 여러 가상 세션을 생성하고 관리하는 도구로 SSH 연결이 끊어지거나 터미널을 종료해도 tmux 세션 내 작업은 계속 유지되므로 장시간 작업 및 에이전트 유지 시 유용함.
