@@ -43,6 +43,8 @@ cp .env.example .env
 # SANDBOX_COLOR 프롬프트 색상
 ```
 
+빌드 시 반영되므로 변경 후에는 `docker compose up -d --build` 가 필요하다.
+
 ### 5. 컨테이너 실행
 
 ```bash

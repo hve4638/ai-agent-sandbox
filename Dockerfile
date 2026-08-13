@@ -29,6 +29,12 @@ RUN npm install -g @google/gemini-cli && \
     npm install -g @openai/codex && \
     npm install -g @github/copilot
 
+# 프롬프트 값. .bashrc.d 로더보다 먼저 설정되어야 한다
+ARG NAME=sandbox
+ARG COLOR=32
+RUN echo "PS1_NAME=$NAME"   >> /root/.bashrc && \
+    echo "PS1_COLOR=$COLOR" >> /root/.bashrc
+
 # .bashrc.d 로드 (2단계 깊이까지, *.sh만)
 RUN cat <<'EOF' >> ~/.bashrc
 if [ -d "$HOME/.bashrc.d" ]; then
@@ -43,9 +49,6 @@ if [ -d "$HOME/.bashrc.d" ]; then
     done
 fi
 EOF
-
-ARG NAME=sandbox
-ENV NAME=$NAME
 
 COPY rootfs/ /
 
