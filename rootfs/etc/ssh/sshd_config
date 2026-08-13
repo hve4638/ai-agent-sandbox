@@ -1,0 +1,10 @@
+Port 22
+
+PermitRootLogin yes
+PasswordAuthentication no
+PubkeyAuthentication yes
+
+ClientAliveInterval 0
+ClientAliveCountMax 0
+
+UsePAM no

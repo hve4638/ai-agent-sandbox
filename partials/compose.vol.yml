@@ -1,8 +1,7 @@
 services:
   sandbox:
     volumes:
-      - ./vol/home/.bashrc.d:/root/.bashrc.d
-      - ./vol/home/.tmux.conf:/root/.tmux.conf
+      - ./vol/bootstrap.d:/opt/bootstrap.d
       - ./vol/data/.codex:/root/.codex
       - ./vol/data/.copilot:/root/.copilot
       - ./vol/data/.gemini:/root/.gemini

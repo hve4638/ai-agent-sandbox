@@ -1,12 +1,14 @@
 #!/bin/bash
 set -e
 
-# 저장소 루트(source/)에서 실행되도록 이동
-cd "$(dirname "$0")"
+REPO_DIR=$(cd "$(dirname "$0")" && pwd)
 
-for script in ./scripts/*.sh; do
-    echo "[*] Running $script"
+echo "[*] Repository : $REPO_DIR"
+echo "[*] Target     : $(pwd)/vol"
+
+for script in "$REPO_DIR"/scripts/*.sh; do
+    echo "[*] Running $(basename "$script")"
     bash "$script"
 done
 
-echo "[✔] Initial vol/ is ready"
+echo "[✔] Initial vol/ is ready at $(pwd)/vol"
