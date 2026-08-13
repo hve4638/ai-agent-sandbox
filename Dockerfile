@@ -44,12 +44,9 @@ if [ -d "$HOME/.bashrc.d" ]; then
 fi
 EOF
 
-ARG NAME=Agent
+ARG NAME=sandbox
 ENV NAME=$NAME
-RUN echo "export PS1='\[\e]0;\u@\h: \w\a\]\[\033[01;32m\]${NAME}@\h\[\033[00m\]:\[\033[01;34m\]\w$\[\033[00m\] '" >> /root/.bashrc
 
-# 이미지에 그대로 얹히는 파일들 (sshd_config, AGENTS.md, bootstrap.d 러너 등)
-# 캐시 무효화 범위를 줄이기 위해 설치 단계 뒤에 둔다
 COPY rootfs/ /
 
 EXPOSE 22

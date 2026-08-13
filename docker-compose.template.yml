@@ -10,9 +10,13 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NAME: ${SANDBOX_NAME:-Agent}
+        NAME: ${SANDBOX_NAME:-sandbox}
     container_name: sandbox-workspace
     restart: unless-stopped
+    environment:
+      NAME: ${SANDBOX_NAME:-sandbox}
+      # 프롬프트 색상 (31 red / 32 green / 33 yellow / 34 blue / 36 cyan)
+      # PS1_COLOR: 33
     ports:
       - "1022:22"
     # 작업 디렉토리 마운트 (필수): 경로 수정 후 주석 해제
