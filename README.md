@@ -39,7 +39,8 @@ SSH 키(호스트, 클라이언트), 에이전트 데이터 디렉토리, bootst
 
 ```bash
 cp .env.example .env
-# SANDBOX_NAME=Agent 값을 원하는 이름으로 변경
+# SANDBOX_NAME  프롬프트에 표시될 이름
+# SANDBOX_COLOR 프롬프트 색상
 ```
 
 ### 5. 컨테이너 실행
