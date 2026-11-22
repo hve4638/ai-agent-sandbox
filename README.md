@@ -29,6 +29,8 @@ volumes:
 
 SSH 키(호스트, 클라이언트), 에이전트 데이터 디렉토리, bootstrap.d 시드를 생성
 
+에이전트 공용 지침 `data/AGENTS.md`는 `vol/data/`의 `.claude/CLAUDE.md`, `.codex/AGENTS.md`, `.gemini/GEMINI.md`로 복사된다. 이미 있는 파일은 건너뛴다.
+
 ```bash
 ./init.sh
 ```
@@ -135,7 +137,7 @@ docker compose logs sandbox | grep bootstrap
 | `tk` / `tkill` | `tmux kill-session -t` | 세션 종료 |
 | `tl` / `tls` | `tmux list-sessions` | 세션 목록 |
 | `td` | `tmux detach` | 세션 분리 |
-| `tr` / `trename` | `tmux rename-session -t` | 세션 이름 변경 |
+| `trename` | `tmux rename-session -t` | 세션 이름 변경 |
 | `tcapture` | `tmux capture-pane -p -S -` | 스크롤백 전체 출력 |
 
 ## AI Agent

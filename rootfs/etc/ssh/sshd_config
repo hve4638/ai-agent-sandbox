@@ -8,3 +8,5 @@ ClientAliveInterval 0
 ClientAliveCountMax 0
 
 UsePAM no
+
+Subsystem sftp /usr/lib/openssh/sftp-server

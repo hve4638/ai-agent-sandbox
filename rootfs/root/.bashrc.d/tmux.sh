@@ -7,7 +7,6 @@ alias tls="tmux list-sessions"
 alias tl="tmux list-sessions"
 alias td="tmux detach"
 alias trename="tmux rename-session -t"
-alias tr="tmux rename-session -t"
 alias tcapture="tmux capture-pane -p -S - -t"
 
 if [ -n "$SSH_TTY" ] && [ -z "$TMUX" ]; then
