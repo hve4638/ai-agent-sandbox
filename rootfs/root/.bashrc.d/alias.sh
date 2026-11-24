@@ -3,7 +3,7 @@ alias copilot="copilot --allow-all-tools"
 alias codex="codex --yolo"
 alias gemini="gemini --yolo"
 
-alias pg='cd /playground'
+alias pg='cd /workspace'
 
 export LC_ALL=ko_KR.UTF-8
 export LANG=ko_KR.UTF-8

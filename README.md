@@ -4,70 +4,75 @@
 
 ## 요구사항
 
-- Docker & Docker Compose
+- Docker & Docker Compose v2.20 이상
 
 ## 빠른 시작
 
-### 1. docker-compose.yml 생성
+### 1. 배포 폴더 생성 및 셋업
 
-템플릿을 복사해 로컬 설정 파일 생성
+배포 폴더를 만들고 저장소를 그 안의 `source/`로 clone한 뒤 `init.sh`를 실행
 
 ```bash
-cp docker-compose.template.yml docker-compose.yml
+mkdir sandbox && cd sandbox
+git clone https://github.com/hve4638/ai-agent-sandbox source
+./source/init.sh
 ```
 
-### 2. 볼륨 경로 설정
+`init.sh`는 배포 폴더(`source/`의 상위)에 다음을 생성한다. 이미 있는 파일은 건너뛴다.
 
-`docker-compose.yml`에서 작업 디렉토리 경로를 환경에 맞게 수정
+```
+sandbox/
+├── docker-compose.yml   # 템플릿 복사본 (사용자 소유)
+├── .env                 # PS1 이름·색상 (사용자 소유)
+├── vol/                 # SSH 키, 에이전트 데이터, bootstrap.d
+└── source/              # 이 저장소
+```
+
+에이전트 공용 지침 `source/data/AGENTS.md`는 `vol/data/`의 `.claude/CLAUDE.md`, `.codex/AGENTS.md`, `.gemini/GEMINI.md`로 복사된다.
+
+### 2. docker-compose.yml 수정
+
+작업 디렉토리 기본값은 `./workspace`이다. AI에게 접근을 허용할 폴더로 변경한다.
 
 ```yaml
 volumes:
-  - /path/to/your/workspace:/playground  # 실제 작업 디렉토리로 변경
+  - /path/to/your/workspace:/workspace
 ```
 
-### 3. 셋업
+시간대 공유와 NVIDIA GPU 연결은 템플릿에 주석으로 들어 있다. 필요하면 주석을 해제한다.
+GPU는 호스트에 nvidia-container-toolkit이 설정되어 있어야 한다.
 
-SSH 키(호스트, 클라이언트), 에이전트 데이터 디렉토리, bootstrap.d 시드를 생성
+`.env`의 `SANDBOX_NAME`, `SANDBOX_COLOR`는 셸 프롬프트의 이름과 색상이다. 빌드 시 반영된다.
 
-에이전트 공용 지침 `data/AGENTS.md`는 `vol/data/`의 `.claude/CLAUDE.md`, `.codex/AGENTS.md`, `.gemini/GEMINI.md`로 복사된다. 이미 있는 파일은 건너뛴다.
+### 3. 컨테이너 실행
 
 ```bash
-./init.sh
+docker compose up -d --build
 ```
 
-### 4. (선택) PS1 이름 설정
-
-셸 프롬프트에 표시될 이름을 변경하려면 `.env` 생성 후 수정
-
-```bash
-cp .env.example .env
-# SANDBOX_NAME  프롬프트에 표시될 이름
-# SANDBOX_COLOR 프롬프트 색상
-```
-
-빌드 시 반영되므로 변경 후에는 `docker compose up -d --build` 가 필요하다.
-
-### 5. 컨테이너 실행
-
-```bash
-docker-compose up -d --build
-```
-
-### 6. SSH 접속
+### 4. SSH 접속
 
 ```bash
 ssh -i ./vol/client_keys/id_rsa -p 1022 root@localhost
 ```
 
+### 갱신
+
+```bash
+git -C source pull
+./source/init.sh   # 새로 추가된 기본 파일만 생성
+docker compose up -d --build
+```
+
 ## 유의사항
 
 ⚠️ 작업 디렉토리
-- `/playground` 디렉토리 내에서만 작업
-- 컨테이너 제거 시 `/playground` 외부의 작업 내역은 모두 휘발됨
+- `/workspace` 디렉토리 내에서만 작업
+- 컨테이너 제거 시 `/workspace` 외부의 작업 내역은 모두 휘발됨
 
 ⚠️ 프로젝트 관리
 - 기존 작업 폴더를 통째로 마운트하지 말 것
-- AI에게 접근을 허용할 프로젝트만 별도 폴더에 넣어 `/playground`에 연결
+- AI에게 접근을 허용할 프로젝트만 별도 폴더에 넣어 `/workspace`에 연결
 
 ⚠️ 백업
 - 작업 내역은 주기적으로 백업 권장 (git 원격 저장소, 외부 저장소 복제 등)

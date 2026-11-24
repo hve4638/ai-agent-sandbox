@@ -1,13 +1,15 @@
+# 배포 폴더(source/ 의 상위)에 docker-compose.yml 로 복사해 쓰는 파일
+# init.sh 가 복사하며, 복사된 파일은 사용자 소유다
 include:
   - path:
-      - partials/compose.ssh.yml
-      - partials/compose.vol.yml
+      - source/partials/compose.ssh.yml
+      - source/partials/compose.vol.yml
     project_directory: .
 
 services:
   sandbox:
     build:
-      context: .
+      context: source
       dockerfile: Dockerfile
       args:
         NAME: ${SANDBOX_NAME:-sandbox}
@@ -16,6 +18,11 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:1022:22"
-    # 작업 디렉토리 마운트 (필수): 경로 수정 후 주석 해제
-    # volumes:
-    #   - /path/to/your/directory:/playground
+    volumes:
+      # 작업 디렉토리: AI에게 접근을 허용할 폴더로 변경
+      - ./workspace:/workspace
+      # (선택) 호스트 시간대 사용
+      # - /etc/localtime:/etc/localtime:ro
+    # (선택) NVIDIA GPU 연결 (CDI)
+    # devices:
+    #   - nvidia.com/gpu=all
